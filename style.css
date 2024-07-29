@@ -6,7 +6,7 @@
 
 body {
   font-family: Arial, sans-serif;
-  background-color: black; /* Mustard yellow background */
+  background-color: #000; /* Black background */
   overflow: hidden; /* Hide scrollbar during animation */
   margin: 0;
 }
@@ -87,17 +87,6 @@ body {
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
 }
 
-.iris-image {
-  position: absolute;
-  right: 20px;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 150px; /* Adjust size for better balance */
-  height: auto;
-  border-radius: 10px; /* Add rounded corners for a softer look */
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
-}
-
 .input-section {
   display: flex;
   flex-direction: column;
@@ -122,7 +111,9 @@ button:hover {
   background-color: #555;
 }
 
-/* Additional styles for the new note page */
-.note-page .input-section {
-  margin-top: 20px;
+#interactionCanvas {
+  border: 1px solid #ccccc;
+  display: block;
+  margin: 20px auto;
+  background-color: #fafafa;
 }

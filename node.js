@@ -1,27 +1,49 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const { exec } = require('child_process');
+function sendNote() {
+  const note = document.getElementById('noteInput').value;
 
-const app = express();
-app.use(bodyParser.json());
+  fetch('/sendNote', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ note: note })
+  })
+  .then(response => response.text())
+  .then(data => console.log('Success:', data))
+  .catch((error) => console.error('Error:', error));
+}
 
-app.post('/harmonize', (req, res) => {
-  const note = req.body.note;
+function goToHomePage() {
+  document.querySelector('.home-page').style.transform = 'translateY(0)';
+  document.querySelector('.note-page').style.transform = 'translateY(100%)';
+}
 
-  // Call Max MSP script with the input note
-  exec(`path_to_your_max_script ${note}`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`exec error: ${error}`);
-      return res.status(500).json({ error: 'Error harmonizing note' });
-    }
-
-    const harmonizedNotes = JSON.parse(stdout); // Assuming the script returns JSON
-
-    res.json({ harmonizedNotes });
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.title-wrapper').classList.add('animate');
+  initializePatch();
+  
+  document.querySelector('.title-wrapper').addEventListener('click', () => {
+    document.querySelector('.home-page').style.transform = 'translateY(-100%)';
+    document.querySelector('.note-page').style.transform = 'translateY(0)';
   });
 });
 
-const PORT = 3000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+async function initializePatch() {
+  const canvas = document.getElementById('interactionCanvas');
+  const context = new (window.AudioContext || window.webkitAudioContext)();
+  const oscillator = context.createOscillator();
+  oscillator.type = 'sine';
+  oscillator.frequency.value = 440;
+  oscillator.connect(context.destination);
+  oscillator.start();
+
+  canvas.onpointermove = (event) => {
+    const rect = canvas.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    oscillator.frequency.value = x * 1000;
+  };
+
+  document.body.addEventListener('click', () => {
+    context.resume();
+  });
+}

@@ -5,18 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>IRIS</title>
   <link rel="stylesheet" href="style.css">
-  <!-- Link to Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=YourGraffitiFont:wght@400;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-</head>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap">
-
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>IRIS</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=YourGraffitiFont:wght@400;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://your-cdn-link-to-rnbo.min.js"></script> 
+ <script src="js/rnbo.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+ <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
 </head>
 <body>
   <div class="container">
@@ -28,6 +21,7 @@
     </section>
 
     <section class="note-page" id="notePage">
+      <canvas id="interactionCanvas" width="800" height="600"></canvas>
       <div class="input-section">
         <input type="text" id="noteInput" placeholder="Enter a note (e.g., C4)">
         <button onclick="sendNote()">Harmonize</button>
