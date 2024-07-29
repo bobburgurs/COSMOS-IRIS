@@ -1,35 +1,33 @@
-const WebSocket = require('ws');
-const http = require('http');
+const express = require('express');
+const bodyParser = require('body-parser');
+const { UDPPort } = require('osc');
 
-// Create an HTTP server
-const server = http.createServer((req, res) => {
-  res.writeHead(200, { 'Content-Type': 'text/plain' });
-  res.end('WebSocket server is running');
+const app = express();
+app.use(bodyParser.json());
+
+// OSC Setup
+const udpPort = new UDPPort({
+  localAddress: "0.0.0.0",
+  localPort: 3333, // Port for listening
+  remoteAddress: "127.0.0.1",
+  remotePort: 3334 // Port where Max MSP is listening
 });
 
-// Create a WebSocket server and attach it to the HTTP server
-const wss = new WebSocket.Server({ server });
+udpPort.open();
 
-// Event listener for new WebSocket connections
-wss.on('connection', (ws) => {
-  console.log('New client connected');
-
-  // Event listener for messages from clients
-  ws.on('message', (message) => {
-    console.log(`Received message => ${message}`);
-
-    // Echo the message back to the client
-    ws.send(`Server received: ${message}`);
+app.post('/harmonize', (req, res) => {
+  const note = req.body.note;
+  
+  // Send OSC message
+  udpPort.send({
+    address: '/note',
+    args: [note]
   });
 
-  // Event listener for connection close
-  ws.on('close', () => {
-    console.log('Client disconnected');
-  });
+  res.json({ status: 'Note sent', note });
 });
 
-// Start the server
-const PORT = 8080;
-server.listen(PORT, () => {
-  console.log(`Server is listening on port ${PORT}`);
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });
