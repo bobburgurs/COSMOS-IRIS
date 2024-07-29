@@ -8,21 +8,28 @@ document.querySelector('.title-wrapper').addEventListener('click', () => {
   document.querySelector('.note-page').style.transform = 'translateY(0)';
 });
 
-async function sendNote() {
+function sendNote() {
   const note = document.getElementById('noteInput').value;
+  console.log(`Sending note: ${note}`);
 
-  try {
-    const response = await fetch('/harmonize', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({ note: note })
-    });
+  // Create an OSC client instance
+  const oscClient = new osc.Client('127.0.0.1', 3334);
 
-    const data = await response.json();
-    console.log('Success:', data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
+  // Send the note to Max using OSC
+  oscClient.send('/note', note, (err) => {
+    if (err) {
+      console.error('Error sending OSC message:', err);
+      return; // Handle error gracefully
+    }
+    console.log(`Sent note to Max: ${note}`);
+  });
+}
+
+// Function to transition to the note page
+function goToNotePage() {
+  const homePage = document.getElementById('homePage');
+  const notePage = document.getElementById('notePage');
+
+  homePage.style.transform = 'translateY(-100%)';
+  notePage.style.transform = 'translateY(0)';
 }

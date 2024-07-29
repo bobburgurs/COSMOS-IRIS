@@ -1,33 +1,30 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const { UDPPort } = require('osc');
+const osc = require('node-osc');
 
 const app = express();
 app.use(bodyParser.json());
 
-// OSC Setup
-const udpPort = new UDPPort({
-  localAddress: "0.0.0.0",
-  localPort: 3333, // Port for listening
-  remoteAddress: "127.0.0.1",
-  remotePort: 3334 // Port where Max MSP is listening
-});
+const oscClient = new osc.Client('127.0.0.1', 3334); // Connect to Max MSP at port 3334
 
-udpPort.open();
+function sendNote() {
+  const note = document.getElementById('noteInput').value;
+  console.log(`Sending note: ${note}`);
 
-app.post('/harmonize', (req, res) => {
-  const note = req.body.note;
-  
-  // Send OSC message
-  udpPort.send({
-    address: '/note',
-    args: [note]
+  // Create an OSC client instance
+  const oscClient = new osc.Client('127.0.0.1', 3334);
+
+  // Send the note to Max using OSC
+  oscClient.send('/note', note, (err) => {
+    if (err) {
+      console.error('Error sending OSC message:', err);
+      return; // Handle error gracefully
+    }
+    console.log(`Sent note to Max: ${note}`);
   });
+}
 
-  res.json({ status: 'Note sent', note });
-});
-
-const PORT = 3000;
+const PORT = 3334;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
